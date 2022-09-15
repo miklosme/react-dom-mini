@@ -16,6 +16,10 @@ const reconciler = ReactReconciler({
       el.addEventListener('click', props.onClick);
     }
 
+    if (props.bgColor) {
+      el.style.backgroundColor = props.bgColor;
+    }
+
     return el;
   },
   createTextInstance(text, rootContainerInstance) {
@@ -52,15 +56,50 @@ const reconciler = ReactReconciler({
   getRootHostContext: () => null,
   getChildHostContext: parentHostContext => parentHostContext,
   finalizeInitialChildren(instance) {},
-  prepareUpdate(instance, _type, oldProps, newProps) {},
+
+  prepareUpdate(instance, _type, oldProps, newProps) {
+    const payload = {};
+
+    ['className', 'src', 'alt', 'href', 'target', 'rel'].forEach(attr => {
+      if (oldProps[attr] !== newProps[attr]) {
+        payload[attr] = newProps[attr];
+      }
+    });
+
+    if (oldProps.onClick !== newProps.onClick) {
+      payload.onClick = newProps.onClick;
+    }
+
+    if (oldProps.bgColor !== newProps.bgColor) {
+      payload.newBgColor = newProps.bgColor;
+    }
+
+    return payload;
+  },
   commitUpdate(
     instance,
-    [reconstruct, diff],
+    updatePayload,
     type,
-    _oldProps,
+    oldProps,
     newProps,
     fiber,
-  ) {},
+  ) {
+    ['className', 'src', 'alt', 'href', 'target', 'rel'].forEach(attr => {
+      if (updatePayload[attr]) {
+        instance[attr] = updatePayload[attr];
+      }
+    });
+
+    if (updatePayload.onClick) {
+      instance.removeEventListener('click', oldProps.onClick);
+      instance.addEventListener('click', updatePayload.onClick);
+    }
+
+    if (updatePayload.newBgColor) {
+      instance.style.backgroundColor = updatePayload.newBgColor;
+    }
+  },
+
   // commitMount(instance, _type, _props, _int) {},
   // getPublicInstance: instance => instance,
   prepareForCommit: () => null,
