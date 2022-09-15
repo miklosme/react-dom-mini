@@ -11,6 +11,11 @@ const reconciler = ReactReconciler({
         el[attr] = props[attr];
       }
     });
+
+    if (props.onClick) {
+      el.addEventListener('click', props.onClick);
+    }
+
     return el;
   },
   createTextInstance(text, rootContainerInstance) {
@@ -30,7 +35,12 @@ const reconciler = ReactReconciler({
     container.appendChild(child);
   },
 
-  insertBefore() {},
+  insertBefore(parent, child, before) {
+    parent.insertBefore(child, before);
+  },
+  insertInContainerBefore(container, child, beforeChild) {
+    container.insertBefore(child, beforeChild);
+  },
 
   supportsMutation: true,
   // isPrimaryRenderer: false,
@@ -39,7 +49,6 @@ const reconciler = ReactReconciler({
   // noTimeout: -1,
 
   removeChildFromContainer: (container, child) => {},
-  insertInContainerBefore: (container, child, beforeChild) => {},
   getRootHostContext: () => null,
   getChildHostContext: parentHostContext => parentHostContext,
   finalizeInitialChildren(instance) {},
@@ -66,7 +75,7 @@ const reconciler = ReactReconciler({
   // getCurrentEventPriority: () => {},
   // beforeActiveInstanceBlur: () => {},
   // afterActiveInstanceBlur: () => {},
-  // detachDeletedInstance: () => {},
+  detachDeletedInstance: () => {},
   // now: performance.now,
   // scheduleTimeout: setTimeout,
   // cancelTimeout: clearTimeout,

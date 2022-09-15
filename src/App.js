@@ -1,11 +1,13 @@
+import { useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
 function App() {
+  const [showLogo, setShowLogo] = useState(true);
   return (
-    <div className="App">
+    <div className="App" onClick={() => setShowLogo(show => !show)}>
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
+        {showLogo && <img src={logo} className="App-logo" alt="logo" />}
         <p>
           Edit <code>src/App.js</code> and save to reload.
         </p>
